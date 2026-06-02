@@ -34,35 +34,35 @@ export default function DashboardPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-slate-900 mb-6">Dashboard</h1>
+      <h1 className="text-xl sm:text-2xl font-bold text-slate-900 mb-5 sm:mb-6">Dashboard</h1>
 
       {loading ? (
         <p className="text-slate-500">Loading…</p>
       ) : (
         <>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
             {stats.map((s) => (
-              <div key={s.label} className="card">
+              <div key={s.label} className="card !p-4 sm:!p-6">
                 <div className={`inline-flex px-2 py-1 rounded text-xs font-medium ${s.color}`}>{s.label}</div>
-                <div className="mt-2 text-3xl font-bold text-slate-900">{s.value}</div>
+                <div className="mt-2 text-2xl sm:text-3xl font-bold text-slate-900 truncate">{s.value}</div>
               </div>
             ))}
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
             <div className="card">
-              <h2 className="text-lg font-semibold mb-4">Recent Orders</h2>
+              <h2 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">Recent Orders</h2>
               {orders.length === 0 ? (
                 <p className="text-sm text-slate-500">No orders yet.</p>
               ) : (
                 <ul className="divide-y divide-slate-100">
                   {orders.slice(0, 5).map((o) => (
-                    <li key={o.id} className="py-3 flex items-center justify-between">
-                      <div>
+                    <li key={o.id} className="py-3 flex items-center justify-between gap-3">
+                      <div className="min-w-0 flex-1">
                         <div className="font-medium">Order #{o.id}</div>
-                        <div className="text-sm text-slate-500">{o.customer?.name || `Customer ${o.customer_id}`}</div>
+                        <div className="text-sm text-slate-500 truncate">{o.customer?.name || `Customer ${o.customer_id}`}</div>
                       </div>
-                      <div className="text-right">
+                      <div className="text-right shrink-0">
                         <div className="font-medium">${o.total_amount.toFixed(2)}</div>
                         <div className="text-xs text-slate-500 capitalize">{o.status}</div>
                       </div>
@@ -73,7 +73,7 @@ export default function DashboardPage() {
             </div>
 
             <div className="card">
-              <h2 className="text-lg font-semibold mb-4">
+              <h2 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">
                 Low Stock {lowStock > 0 && <span className="text-red-600 text-sm">({lowStock})</span>}
               </h2>
               {products.length === 0 ? (
@@ -84,13 +84,13 @@ export default function DashboardPage() {
                     .sort((a, b) => a.stock - b.stock)
                     .slice(0, 5)
                     .map((p) => (
-                      <li key={p.id} className="py-3 flex items-center justify-between">
-                        <div>
-                          <div className="font-medium">{p.name}</div>
-                          <div className="text-sm text-slate-500">SKU: {p.sku}</div>
+                      <li key={p.id} className="py-3 flex items-center justify-between gap-3">
+                        <div className="min-w-0 flex-1">
+                          <div className="font-medium truncate">{p.name}</div>
+                          <div className="text-sm text-slate-500 truncate">SKU: {p.sku}</div>
                         </div>
                         <span
-                          className={`badge ${
+                          className={`badge shrink-0 ${
                             p.stock === 0
                               ? "bg-red-100 text-red-700"
                               : p.stock < 10

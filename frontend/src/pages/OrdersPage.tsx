@@ -4,6 +4,7 @@ import { api, extractError } from "../api/client";
 import { Order, Product, Customer, OrderItemInput } from "../types";
 import Modal from "../components/Modal";
 import EmptyState from "../components/EmptyState";
+import PageHeader from "../components/PageHeader";
 
 interface DraftItem {
   product_id: number | "";
@@ -105,12 +106,18 @@ export default function OrdersPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-slate-900">Orders</h1>
-        <button className="btn-primary" onClick={openCreate} disabled={customers.length === 0 || products.length === 0}>
-          + New Order
-        </button>
-      </div>
+      <PageHeader
+        title="Orders"
+        action={
+          <button
+            className="btn-primary w-full sm:w-auto"
+            onClick={openCreate}
+            disabled={customers.length === 0 || products.length === 0}
+          >
+            + New Order
+          </button>
+        }
+      />
 
       {(customers.length === 0 || products.length === 0) && !loading && (
         <div className="card mb-4 bg-amber-50 border-amber-200">
@@ -126,48 +133,85 @@ export default function OrdersPage() {
         ) : orders.length === 0 ? (
           <EmptyState title="No orders yet" message="Place your first order to see it here." />
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-slate-50 text-slate-600">
-                <tr>
-                  <th className="text-left px-6 py-3 font-medium">Order #</th>
-                  <th className="text-left px-6 py-3 font-medium">Customer</th>
-                  <th className="text-left px-6 py-3 font-medium">Items</th>
-                  <th className="text-right px-6 py-3 font-medium">Total</th>
-                  <th className="text-left px-6 py-3 font-medium">Status</th>
-                  <th className="text-right px-6 py-3 font-medium">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {orders.map((o) => (
-                  <tr key={o.id} className="hover:bg-slate-50">
-                    <td className="px-6 py-3 font-medium">#{o.id}</td>
-                    <td className="px-6 py-3">{o.customer?.name || "—"}</td>
-                    <td className="px-6 py-3">{o.items.length}</td>
-                    <td className="px-6 py-3 text-right">${o.total_amount.toFixed(2)}</td>
-                    <td className="px-6 py-3">
-                      <select
-                        className={`badge border-0 cursor-pointer ${statusColor(o.status)}`}
-                        value={o.status}
-                        onChange={(e) => changeStatus(o, e.target.value)}
-                      >
-                        {STATUSES.map((s) => (
-                          <option key={s} value={s}>
-                            {s}
-                          </option>
-                        ))}
-                      </select>
-                    </td>
-                    <td className="px-6 py-3 text-right">
-                      <button className="btn-secondary !px-3 !py-1 text-xs" onClick={() => setDetailOrder(o)}>
-                        View
-                      </button>
-                    </td>
+          <>
+            {/* Mobile card list */}
+            <ul className="sm:hidden divide-y divide-slate-100">
+              {orders.map((o) => (
+                <li key={o.id} className="p-4 flex flex-col gap-3">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0 flex-1">
+                      <div className="font-semibold">Order #{o.id}</div>
+                      <div className="text-sm text-slate-500 truncate">{o.customer?.name || "—"}</div>
+                      <div className="text-xs text-slate-500">{o.items.length} item{o.items.length === 1 ? "" : "s"}</div>
+                    </div>
+                    <div className="text-right shrink-0">
+                      <div className="font-semibold text-slate-900">${o.total_amount.toFixed(2)}</div>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between gap-2">
+                    <select
+                      className={`badge border-0 cursor-pointer ${statusColor(o.status)}`}
+                      value={o.status}
+                      onChange={(e) => changeStatus(o, e.target.value)}
+                    >
+                      {STATUSES.map((s) => (
+                        <option key={s} value={s}>
+                          {s}
+                        </option>
+                      ))}
+                    </select>
+                    <button className="btn-secondary !px-3 !py-1.5 text-xs" onClick={() => setDetailOrder(o)}>
+                      View
+                    </button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+
+            {/* Desktop table */}
+            <div className="hidden sm:block overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead className="bg-slate-50 text-slate-600">
+                  <tr>
+                    <th className="text-left px-6 py-3 font-medium">Order #</th>
+                    <th className="text-left px-6 py-3 font-medium">Customer</th>
+                    <th className="text-left px-6 py-3 font-medium">Items</th>
+                    <th className="text-right px-6 py-3 font-medium">Total</th>
+                    <th className="text-left px-6 py-3 font-medium">Status</th>
+                    <th className="text-right px-6 py-3 font-medium">Actions</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {orders.map((o) => (
+                    <tr key={o.id} className="hover:bg-slate-50">
+                      <td className="px-6 py-3 font-medium">#{o.id}</td>
+                      <td className="px-6 py-3">{o.customer?.name || "—"}</td>
+                      <td className="px-6 py-3">{o.items.length}</td>
+                      <td className="px-6 py-3 text-right">${o.total_amount.toFixed(2)}</td>
+                      <td className="px-6 py-3">
+                        <select
+                          className={`badge border-0 cursor-pointer ${statusColor(o.status)}`}
+                          value={o.status}
+                          onChange={(e) => changeStatus(o, e.target.value)}
+                        >
+                          {STATUSES.map((s) => (
+                            <option key={s} value={s}>
+                              {s}
+                            </option>
+                          ))}
+                        </select>
+                      </td>
+                      <td className="px-6 py-3 text-right">
+                        <button className="btn-secondary !px-3 !py-1 text-xs" onClick={() => setDetailOrder(o)}>
+                          View
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
         )}
       </div>
 
@@ -207,13 +251,13 @@ export default function OrdersPage() {
                 + Add item
               </button>
             </div>
-            <div className="space-y-2">
+            <div className="space-y-3">
               {items.map((it, idx) => {
                 const p = it.product_id === "" ? null : productsById[it.product_id];
                 return (
-                  <div key={idx} className="flex gap-2 items-start">
+                  <div key={idx} className="flex flex-col sm:flex-row gap-2 sm:items-start p-3 sm:p-0 border sm:border-0 border-slate-100 rounded-lg">
                     <select
-                      className="input flex-1"
+                      className="input flex-1 min-w-0"
                       value={it.product_id}
                       onChange={(e) => {
                         const v = e.target.value === "" ? "" : Number(e.target.value);
@@ -228,29 +272,32 @@ export default function OrdersPage() {
                         </option>
                       ))}
                     </select>
-                    <input
-                      type="number"
-                      min={1}
-                      max={p?.stock || 9999}
-                      className="input w-24"
-                      value={it.quantity}
-                      onChange={(e) =>
-                        setItems(
-                          items.map((x, i) => (i === idx ? { ...x, quantity: Math.max(1, Number(e.target.value)) } : x))
-                        )
-                      }
-                      required
-                    />
-                    {items.length > 1 && (
-                      <button
-                        type="button"
-                        className="btn-danger !px-2 !py-2"
-                        onClick={() => setItems(items.filter((_, i) => i !== idx))}
-                        aria-label="Remove"
-                      >
-                        &times;
-                      </button>
-                    )}
+                    <div className="flex gap-2">
+                      <input
+                        type="number"
+                        min={1}
+                        max={p?.stock || 9999}
+                        className="input w-full sm:w-24"
+                        placeholder="Qty"
+                        value={it.quantity}
+                        onChange={(e) =>
+                          setItems(
+                            items.map((x, i) => (i === idx ? { ...x, quantity: Math.max(1, Number(e.target.value)) } : x))
+                          )
+                        }
+                        required
+                      />
+                      {items.length > 1 && (
+                        <button
+                          type="button"
+                          className="btn-danger !px-3 !py-2 shrink-0"
+                          onClick={() => setItems(items.filter((_, i) => i !== idx))}
+                          aria-label="Remove"
+                        >
+                          &times;
+                        </button>
+                      )}
+                    </div>
                   </div>
                 );
               })}

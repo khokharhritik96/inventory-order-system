@@ -4,6 +4,7 @@ import { api, extractError } from "../api/client";
 import { Customer } from "../types";
 import Modal from "../components/Modal";
 import EmptyState from "../components/EmptyState";
+import PageHeader from "../components/PageHeader";
 
 interface CustomerForm {
   name: string;
@@ -91,10 +92,10 @@ export default function CustomersPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-slate-900">Customers</h1>
-        <button className="btn-primary" onClick={openCreate}>+ Add Customer</button>
-      </div>
+      <PageHeader
+        title="Customers"
+        action={<button className="btn-primary w-full sm:w-auto" onClick={openCreate}>+ Add Customer</button>}
+      />
 
       <div className="card p-0 overflow-hidden">
         {loading ? (
@@ -106,35 +107,59 @@ export default function CustomersPage() {
             action={<button className="btn-primary" onClick={openCreate}>+ Add Customer</button>}
           />
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-slate-50 text-slate-600">
-                <tr>
-                  <th className="text-left px-6 py-3 font-medium">Name</th>
-                  <th className="text-left px-6 py-3 font-medium">Email</th>
-                  <th className="text-left px-6 py-3 font-medium">Phone</th>
-                  <th className="text-right px-6 py-3 font-medium">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {customers.map((c) => (
-                  <tr key={c.id} className="hover:bg-slate-50">
-                    <td className="px-6 py-3 font-medium">{c.name}</td>
-                    <td className="px-6 py-3">{c.email}</td>
-                    <td className="px-6 py-3">{c.phone || "—"}</td>
-                    <td className="px-6 py-3 text-right space-x-2">
-                      <button className="btn-secondary !px-3 !py-1 text-xs" onClick={() => openEdit(c)}>
-                        Edit
-                      </button>
-                      <button className="btn-danger !px-3 !py-1 text-xs" onClick={() => remove(c)}>
-                        Delete
-                      </button>
-                    </td>
+          <>
+            {/* Mobile card list */}
+            <ul className="sm:hidden divide-y divide-slate-100">
+              {customers.map((c) => (
+                <li key={c.id} className="p-4 flex flex-col gap-2">
+                  <div className="min-w-0">
+                    <div className="font-medium truncate">{c.name}</div>
+                    <div className="text-xs text-slate-500 truncate mt-0.5">{c.email}</div>
+                    {c.phone && <div className="text-xs text-slate-500 mt-0.5">{c.phone}</div>}
+                  </div>
+                  <div className="flex justify-end gap-2">
+                    <button className="btn-secondary !px-3 !py-1.5 text-xs" onClick={() => openEdit(c)}>
+                      Edit
+                    </button>
+                    <button className="btn-danger !px-3 !py-1.5 text-xs" onClick={() => remove(c)}>
+                      Delete
+                    </button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+
+            {/* Desktop table */}
+            <div className="hidden sm:block overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead className="bg-slate-50 text-slate-600">
+                  <tr>
+                    <th className="text-left px-6 py-3 font-medium">Name</th>
+                    <th className="text-left px-6 py-3 font-medium">Email</th>
+                    <th className="text-left px-6 py-3 font-medium">Phone</th>
+                    <th className="text-right px-6 py-3 font-medium">Actions</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {customers.map((c) => (
+                    <tr key={c.id} className="hover:bg-slate-50">
+                      <td className="px-6 py-3 font-medium">{c.name}</td>
+                      <td className="px-6 py-3">{c.email}</td>
+                      <td className="px-6 py-3">{c.phone || "—"}</td>
+                      <td className="px-6 py-3 text-right space-x-2 whitespace-nowrap">
+                        <button className="btn-secondary !px-3 !py-1 text-xs" onClick={() => openEdit(c)}>
+                          Edit
+                        </button>
+                        <button className="btn-danger !px-3 !py-1 text-xs" onClick={() => remove(c)}>
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
         )}
       </div>
 
