@@ -244,19 +244,38 @@ Use Swagger UI at `/docs` or `curl`:
 4. **Stock auto-decrement:** create a product with `stock: 10`, place an order for 3, `GET /products/{id}` → stock is `7`.
 5. **Race-free deduction:** the order route locks product rows with `SELECT ... FOR UPDATE` before validating and deducting.
 
-## Submission Checklist
+## Submission
 
-- [x] Python backend (FastAPI)
-- [x] React frontend
-- [x] PostgreSQL
-- [x] Unique SKU + unique email
+| Item | URL |
+|---|---|
+| **Live frontend (Vercel)** | https://inventory-order-system-weld.vercel.app |
+| **Live backend (Render)** | https://inventory-backend-u9sc.onrender.com |
+| **API docs (Swagger)** | https://inventory-backend-u9sc.onrender.com/docs |
+| **GitHub repository** | https://github.com/khokharhritik96/inventory-order-system |
+| **Docker Hub — backend** | https://hub.docker.com/r/khokharhritik96/inventory-backend |
+| **Docker Hub — frontend** | https://hub.docker.com/r/khokharhritik96/inventory-frontend |
+| **Database** | Neon PostgreSQL (managed, sslmode=require) |
+
+### Pull and run the images locally
+
+```bash
+docker pull khokharhritik96/inventory-backend:latest
+docker pull khokharhritik96/inventory-frontend:latest
+```
+
+### Submission checklist
+
+- [x] Python backend (FastAPI) — deployed on Render
+- [x] React frontend — deployed on Vercel
+- [x] PostgreSQL — Neon managed Postgres
+- [x] Unique SKU + unique email enforcement
 - [x] Stock validation + automatic deduction
-- [x] Docker + Docker Compose
+- [x] Docker + Docker Compose for local
 - [x] Env-based config — no hardcoded credentials
-- [ ] Live frontend URL (Vercel/Netlify)
-- [ ] Live backend URL (Render/Railway/Fly)
-- [ ] Docker image link (Docker Hub)
-- [ ] GitHub repository link
+- [x] Live frontend URL
+- [x] Live backend URL
+- [x] Docker image links (multi-arch: amd64 + arm64)
+- [x] GitHub repository link
 
 ## License
 
