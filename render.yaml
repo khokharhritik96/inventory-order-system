@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: inventory-backend
+    runtime: docker
+    plan: free
+    region: oregon
+    rootDir: backend
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /health
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: CORS_ORIGINS
+        sync: false
+      - key: APP_NAME
+        value: Inventory & Order Management System
+      - key: DEBUG
+        value: "false"
